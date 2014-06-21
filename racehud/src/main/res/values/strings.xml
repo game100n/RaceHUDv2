@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Launch-related strings. -->
+    <string name="app_name">RaceHUD</string>
+    <string name="startRaceHUD">show stats</string>
+
+    <!-- App strings. -->
+    <string name="initial_speed">-.-</string>
+
+
+    <!-- Description strings. -->
+    <string name="RaceGaugeDes">Gauge for speedometer</string>
+    <string name="RaceNeedleDes">Needle for Gauge</string>
+    <string name="RaceCircleDes">Overlays on needle for digital output</string>
+    <string name="MPH">mph</string>
+
+    <!-- Menu item strings. -->
+    <string name="stop">Stop</string>
+
+</resources>
