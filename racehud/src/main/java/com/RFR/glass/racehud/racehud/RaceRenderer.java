@@ -54,18 +54,19 @@ public class RaceRenderer implements DirectRenderingCallback
     private static double SpeedtoAngle = 0.59259;
     //private static int NeedleRotateX = 214;
     //private static int NeedleRotateY = 220;
+    /** 45 deg is the offset the needle starts at */
     float newAngle = 45;
     float oldAngle = 45;
 
-    private final OrientationManager mOrientationManager;
+    private final GPSManager mGPSManager;
 
-    private final OrientationManager.OnChangedListener mRaceListener =
-            new OrientationManager.OnChangedListener()
+    private final GPSManager.OnChangedListener mRaceListener =
+            new GPSManager.OnChangedListener()
             {
                 @Override
-                public void onLocationChanged(OrientationManager orientationManager) {
-                    Location currentlocation = orientationManager.getLocation();
-                    Double currentSpeed = orientationManager.getSpeed();
+                public void onLocationChanged(GPSManager gpsManager) {
+                    Location currentlocation = gpsManager.getLocation();
+                    Double currentSpeed = gpsManager.getSpeed();
 
                     if(currentlocation == null)
                     {
@@ -85,10 +86,12 @@ public class RaceRenderer implements DirectRenderingCallback
                         //Log.d("Test", "Dst " + dst);
                         /** New angle for needle to point to */
                         newAngle = (float) (CurrentSpeedMPH / SpeedtoAngle);
+                        //Log.d("newAngle", newAngle);
                         RotateAnimation mRotateAnimate = new RotateAnimation(oldAngle, newAngle, dst.centerX(), dst.centerY());
                         mRotateAnimate.setDuration(5000);
                         /** Set new angle as the old angle now */
                         oldAngle = newAngle;
+                        //Log.d("oldAngle", oldAngle);
                         mNeedle.startAnimation(mRotateAnimate);
                     }
 
@@ -100,7 +103,7 @@ public class RaceRenderer implements DirectRenderingCallback
      * Creates a new instance of the {@code CompassRenderer} with the specified context and
      * orientation manager.
      */
-    public RaceRenderer(Context context, OrientationManager orientationManager)
+    public RaceRenderer(Context context, GPSManager GPSManager)
     {
         LayoutInflater inflater = LayoutInflater.from(context);
         mLayout = (FrameLayout) inflater.inflate(R.layout.race_view, null);
@@ -115,11 +118,11 @@ public class RaceRenderer implements DirectRenderingCallback
         mRaceFormat.setMaximumFractionDigits(1);
 
 
-        mOrientationManager = orientationManager;
+        mGPSManager = GPSManager;
 
         mNeedle = (ImageView) mLayout.findViewById(R.id.raceNeedle);
 
-        //mRaceView.setOrientationManager(mOrientationManager);
+        //mRaceView.setOrientationManager(mGPSManager);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class RaceRenderer implements DirectRenderingCallback
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
-        // The creation of a new Surface implicitly resumes the rendering.
+        /** The creation of a new Surface implicitly resumes the rendering. */
         mRenderingPaused = false;
         mHolder = holder;
         updateRenderingState();
@@ -165,13 +168,13 @@ public class RaceRenderer implements DirectRenderingCallback
         {
             if (shouldRender)
             {
-                mOrientationManager.addOnChangedListener(mRaceListener);
-                mOrientationManager.start();
+                mGPSManager.addOnChangedListener(mRaceListener);
+                mGPSManager.start();
 
-                if (mOrientationManager.hasLocation())
+                if (mGPSManager.hasLocation())
                 {
-                    Location location = mOrientationManager.getLocation();
-                    Double speed = mOrientationManager.getSpeed();
+                    Location location = mGPSManager.getLocation();
+                    Double speed = mGPSManager.getSpeed();
                 }
 
                 mRenderThread = new RenderThread();
@@ -180,8 +183,8 @@ public class RaceRenderer implements DirectRenderingCallback
                 mRenderThread.quit();
                 mRenderThread = null;
 
-                mOrientationManager.removeOnChangedListener(mRaceListener);
-                mOrientationManager.stop();
+                mGPSManager.removeOnChangedListener(mRaceListener);
+                mGPSManager.stop();
 
             }
         }
@@ -194,8 +197,10 @@ public class RaceRenderer implements DirectRenderingCallback
      */
     private void doLayout()
     {
-        // Measure and update the layout so that it will take up the entire surface space
-        // when it is drawn.
+        /**
+         * Measure and update the layout so that it will take up the entire surface space
+         * when it is drawn.
+         */
         int measuredWidth = View.MeasureSpec.makeMeasureSpec(mSurfaceWidth,
                 View.MeasureSpec.EXACTLY);
         int measuredHeight = View.MeasureSpec.makeMeasureSpec(mSurfaceHeight,
@@ -288,7 +293,4 @@ public class RaceRenderer implements DirectRenderingCallback
             }
         }
     }
-
-
-
 }

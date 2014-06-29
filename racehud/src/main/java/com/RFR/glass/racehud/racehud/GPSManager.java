@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by game1_000 on 5/24/2014.
  */
-public class OrientationManager
+public class GPSManager
 {
 
     /**
@@ -44,9 +44,9 @@ public class OrientationManager
         /**
          * Called when the user's location changes.
          *
-         * @param orientationManager the orientation manager that detected the change
+         * @param gpsManager the orientation manager that detected the change
          */
-        void onLocationChanged(OrientationManager orientationManager);
+        void onLocationChanged(GPSManager gpsManager);
     }
 
     private final LocationManager mLocationManager;
@@ -88,7 +88,7 @@ public class OrientationManager
         }
     };
 
-    public OrientationManager(LocationManager locationManager)
+    public GPSManager(LocationManager locationManager)
     {
         mLocationManager = locationManager;
         mListeners = new LinkedHashSet<OnChangedListener>();

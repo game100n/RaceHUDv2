@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,8 @@ import java.lang.Runnable;
  */
 public class RaceMenuActivity extends Activity
 {
+    /** For logging. */
+    private static final String TAG = "RaceMenu";
 
     private final Handler mHandler = new Handler();
     private View content = null;
@@ -32,6 +35,7 @@ public class RaceMenuActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.race_view);
         content = findViewById(android.R.id.content);
+        Log.d(TAG, "View Created");
     }
 
     @Override
@@ -53,6 +57,7 @@ public class RaceMenuActivity extends Activity
     {
         if (!mOptionsMenuOpen && mAttachedToWindow)
         {
+            Log.d(TAG, "Menu Opened");
             super.openOptionsMenu();
         }
     }
@@ -61,6 +66,7 @@ public class RaceMenuActivity extends Activity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         /** Inflate the menu; this adds items to the action bar if it is present. */
+        Log.d(TAG, "Menu Created");
         getMenuInflater().inflate(R.menu.race_menu, menu);
         return true;
     }
@@ -76,9 +82,9 @@ public class RaceMenuActivity extends Activity
                  * animation. This is only needed when starting an Activity or stopping a Service
                  * that published a LiveCard.
                  */
+
                 mHandler.post(new Runnable()
                 {
-
                     @Override
                     public void run()
                     {
@@ -86,8 +92,9 @@ public class RaceMenuActivity extends Activity
                     }
                 });
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+
+                default:
+                    return super.onOptionsItemSelected(item);
         }
     }
 

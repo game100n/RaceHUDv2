@@ -7,14 +7,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.location.LocationManager;
-import android.os.Binder;
 import android.os.IBinder;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
-
-import java.util.List;
 
 
 /**
@@ -27,7 +22,7 @@ public class RaceService extends Service
     private static final String TAG = "RaceService";
     private static final String LIVE_CARD_TAG = "RaceHUD";
 
-    private OrientationManager mOrientationManager;
+    private GPSManager mGPSManager;
 
     private LiveCard mLiveCard;
     private RaceRenderer mRenderer;
@@ -40,7 +35,7 @@ public class RaceService extends Service
         LocationManager locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        mOrientationManager = new OrientationManager(locationManager);
+        mGPSManager = new GPSManager(locationManager);
     }
 
     @Override
@@ -58,7 +53,7 @@ public class RaceService extends Service
 
             /** Keep track of the callback to remove it before unpublishing */
             mLiveCard = new LiveCard(this, LIVE_CARD_TAG);
-            mRenderer = new RaceRenderer(this, mOrientationManager);
+            mRenderer = new RaceRenderer(this, mGPSManager);
 
             mLiveCard.setDirectRenderingEnabled(true).getSurfaceHolder().addCallback(mRenderer);
 
@@ -91,7 +86,7 @@ public class RaceService extends Service
             mLiveCard = null;
         }
 
-        mOrientationManager = null;
+        mGPSManager = null;
 
         super.onDestroy();
     }
